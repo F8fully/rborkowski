@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Coming Soon</title>
+
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=BBH+Sans+Bartle&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      font-family: 'BBH Sans Bartle', sans-serif;
+      color: #333;
+      background: linear-gradient(270deg, #ac0c0c, #ff7f00, #ffa500, #ac0c0c);
+      background-size: 800% 800%;
+      animation: gradientShift 15s ease infinite;
+    }
+
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* Main container */
+    .center-container {
+      z-index: 2;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      padding: 60px 40px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 25px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 0 25px rgba(0,0,0,0.3);
+      text-align: center;
+    }
+
+    /* White boxes for logo and countdown */
+    .inner-box {
+      background: rgba(255, 255, 255, 0);
+      border-radius: 20px;
+      padding: 30px 50px;
+      margin-bottom: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      /*box-shadow: 0 10px 30px rgba(0,0,0,0.15);*/
+    }
+
+    .logo-box {
+      margin-bottom: 20px;
+    }
+
+    .logo {
+      width: 120px;
+      height: auto;
+      animation: float 3s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+
+    .countdown-box {
+      background: white;
+      border-radius: 15px;
+      padding: 20px 30px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    .countdown {
+      font-size: 1.8rem;
+      font-weight: bold;
+      color: #ff7f00;
+      letter-spacing: 1px;
+    }
+
+    .message {
+      font-size: 1rem;
+      margin-top: 15px;
+      color: white;
+      opacity: 1;
+    }
+
+  </style>
+</head>
+<body>
+  <div class="center-container">
+    <div class="inner-box logo-box">
+      <img src="sp_logo.png" alt="Logo" class="logo" />
+    </div>
+    <div class="inner-box countdown-box">
+      <h1 class="countdown" id="countdown">Loading...</h1>
+    </div>
+    <p class="message">We’re preparing something amazing. Stay tuned!</p>
+  </div>
+
+  <script>
+    // Set your target date here
+    const targetDate = new Date("2025-10-31T23:51:49").getTime();
+    const countdown = document.getElementById("countdown");
+
+    function updateCountdown() {
+      const now = new Date().getTime();
+      const diff = targetDate - now;
+
+      if (diff <= 0) {
+        countdown.innerText = "We're live!";
+        return;
+      }
+
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      const secs = Math.floor((diff % (1000 * 60)) / 1000);
+
+      // Add leading zeros to minutes and seconds
+      const formattedMins = String(mins).padStart(2, '0');
+      const formattedSecs = String(secs).padStart(2, '0');
+    
+      countdown.innerText = `${days} Dni \n ${hours} : ${formattedMins} : ${formattedSecs}`;
+    }
+
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
+  </script>
+</body>
+</html>
+
