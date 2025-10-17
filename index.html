@@ -1,117 +1,261 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Coming Soon</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  
+  <title>RBorkowski |Resume</title>
 
-  <!-- Google Font -->
+    <!-- Google Font -->
   <link href="https://fonts.googleapis.com/css2?family=BBH+Sans+Bartle&display=swap" rel="stylesheet">
 
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
+    :root{
+      --bg1:#0b0033; /* deep purple */
+      --bg2:#1a0066; /* violet */
+      --accent1:#8b3cff; /* neon purple */
+      --accent2:#24e6ff; /* cyan */
+      --accent3:#ff7ab6; /* pink */
+      --glow: 0 8px 40px rgba(139,60,255,0.25), inset 0 2px 8px rgba(36,230,255,0.05);
     }
 
-    body {
-      height: 100vh;
-      display: flex;
-      justify-content: center;
+    html,body{height:100%;margin:0;font-family: 'BBH Sans Bartle', sans-serif;}
+    .stage{
+      position:fixed;inset:0;overflow:hidden;display:grid;place-items:center;background:linear-gradient(135deg,var(--bg1),var(--bg2));
+      /* subtle animated gradient */
+      background-size:400% 400%;
+      animation: bgShift 18s ease-in-out infinite;
+    }
+    @keyframes bgShift{
+      0%{background-position:0% 50%}
+      50%{background-position:100% 50%}
+      100%{background-position:0% 50%}
+    }
+
+    /* canvas fills the stage and creates floating neon tiles */
+    canvas.bg-canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+
+    /* central scene container */
+    .scene{position:relative;z-index:3;width:min(880px,90%);height:min(540px,70%);pointer-events:none}
+
+    /* isometric laptop */
+    .laptop{
+      position:absolute;left:50%;top:50%;transform:translate(-50%,-45%) rotateX(12deg) rotateY(0deg);width:640px;height:360px;filter:drop-shadow(0 30px 40px rgba(10,0,40,0.6));
+      transform-style:preserve-3d;
+    }
+    .base{
+      position:absolute;left:50%;bottom:6%;transform:translateX(-50%);width:420px;height:220px;background:linear-gradient(180deg,#27104a,#120026);border-radius:12px;padding:18px;box-shadow:0 10px 30px rgba(0,0,0,0.6);
+      border:2px solid rgba(255,255,255,0.03);
+    }
+    .screen{
+      position:absolute;left:50%;top:-46%;transform:translateX(-50%);width:520px;height:300px;background:linear-gradient(180deg,#0b0a1a 0%,#120033 60%,#1b0046 100%);border-radius:12px;padding:18px;border:3px solid rgba(139,60,255,0.08);
+      box-shadow: var(--glow);
+      overflow:hidden;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(2px);
+    }
+
+    /* code lines inside screen */
+    .code{
+      width:92%;height:72%;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.00));border-radius:8px;padding:14px 12px;color:#dbe7ff;font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, 'Roboto Mono', 'Courier New', monospace;font-size:13px;position:relative;box-shadow:0 6px 30px rgba(0,0,0,0.6) inset
+    }
+    .line{height:12px;margin:6px 0;border-radius:6px;opacity:0.95}
+    .l1{width:62%;background:linear-gradient(90deg,var(--accent1),var(--accent2));box-shadow:0 0 18px var(--accent1)}
+    .l2{width:46%;background:linear-gradient(90deg,var(--accent2),var(--accent3));box-shadow:0 0 14px var(--accent2)}
+    .l3{width:20%;background:linear-gradient(90deg,var(--accent3),var(--accent1));box-shadow:0 0 10px var(--accent3)}
+    .line.small{height:10px;margin-left:6px;opacity:0.8}
+
+    /* flicker animation for code lines */
+    @keyframes flicker{
+      0%{opacity:0.95}
+      50%{opacity:0.35}
+      100%{opacity:0.95}
+    }
+    .line{animation:flicker 3s infinite ease-in-out}
+    .line:nth-child(2n){animation-duration:2.6s}
+    .line:nth-child(3n){animation-duration:3.6s}
+
+    /* neon cup */
+    .cup{position:absolute;right:6%;top:42%;width:72px;height:120px;border-radius:12px;background:linear-gradient(180deg,#30004a,#190018);box-shadow:0 18px 40px rgba(139,60,255,0.12),0 0 28px rgba(36,230,255,0.04);border:2px solid rgba(255,255,255,0.03);transform:translateY(-20px)}
+    .cup:before{content:'';position:absolute;left:6px;right:6px;top:-18px;height:12px;background:rgba(255,255,255,0.03);border-radius:6px}
+    .steam{position:absolute;left:50%;top:-28px;transform:translateX(-50%);width:30px;height:60px;opacity:0.9}
+    .steam path{stroke:rgba(255,255,255,0.12);stroke-width:2;fill:none}
+    .steam g{opacity:0.9;animation:steam 4s infinite ease-in-out}
+    @keyframes steam{0%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-10px) rotate(-2deg)}100%{transform:translateY(0) rotate(0deg)}}
+
+    /* small floating tiles preview near laptop */
+    .tiles{position:absolute;left:50%;top:64%;transform:translateX(-50%);display:flex;gap:10px;pointer-events:none}
+    .tile{align-items: center;width:92px;height:62px;border-radius:8px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.00));border:2px solid rgba(36,230,255,0.06);box-shadow:0 8px 30px rgba(36,230,255,0.04);transform:translateY(0);animation:float 6s ease-in-out infinite}
+    .tile:nth-child(2){animation-delay:0.6s}
+    .tile:nth-child(3){animation-delay:1.2s}
+    @keyframes float{0%{transform:translateY(0)}50%{transform:translateY(-14px)}100%{transform:translateY(0)}}
+
+    /* responsiveness */
+    @media (max-width:700px){
+      .laptop{width:440px;height:260px}
+      .screen{width:360px;height:210px}
+      .base{width:300px;height:100px;font-size: 80%; top: 40%;}
+      .tiles{display:none}
+    }
+
+        /* White boxes for logo and countdown */
+    .base {
+      color:#ffffff;
       align-items: center;
-      overflow: hidden;
-      font-family: 'BBH Sans Bartle', sans-serif;
-      color: #333;
-      background: linear-gradient(270deg, #ac0c0c, #ff7f00, #ffa500, #ac0c0c);
-      background-size: 800% 800%;
-      animation: gradientShift 15s ease infinite;
-    }
-
-    @keyframes gradientShift {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-    }
-
-    /* Main container */
-    .center-container {
-      z-index: 2;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column;
-      padding: 60px 40px;
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 25px;
-      backdrop-filter: blur(10px);
-      box-shadow: 0 0 25px rgba(0,0,0,0.3);
-      text-align: center;
-    }
-
-    /* White boxes for logo and countdown */
-    .inner-box {
-      background: rgba(255, 255, 255, 0);
-      border-radius: 20px;
-      padding: 30px 50px;
-      margin-bottom: 20px;
+      margin-bottom: 10px;
       display: flex;
       flex-direction: column;
       align-items: center;
       /*box-shadow: 0 10px 30px rgba(0,0,0,0.15);*/
     }
 
-    .logo-box {
-      margin-bottom: 20px;
-    }
-
-    .logo {
-      width: 120px;
-      height: auto;
-      animation: float 3s ease-in-out infinite;
-    }
-
-    @keyframes float {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-8px); }
-    }
-
-    .countdown-box {
-      background: white;
-      border-radius: 15px;
-      padding: 20px 30px;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-    }
-
-    .countdown {
-      font-size: 1.8rem;
-      font-weight: bold;
-      color: #ff7f00;
-      letter-spacing: 1px;
-    }
-
-    .message {
-      font-size: 1rem;
-      margin-top: 15px;
-      color: white;
-      opacity: 1;
-    }
-
   </style>
 </head>
 <body>
-  <div class="center-container">
-    <div class="inner-box logo-box">
-      <img src="sp_logo.png" alt="Logo" class="logo" />
+  <div class="stage">
+    <canvas class="bg-canvas"></canvas>
+    <div class="scene">
+      <div class="laptop">
+        <div class="screen">
+          <div class="code" aria-hidden>
+            <div class="line l1"></div>
+            <div class="line l2"></div>
+            <div class="line l3 small"></div>
+            <div class="line l1"></div>
+            <div class="line l2 small"></div>
+            <div class="line l3"></div>
+            <div class="line l1 small"></div>
+            <div class="line l2"></div>
+            <div class="line l3 small"></div>
+          </div>
+        </div>
+        <div class="base">
+              <h1 class="countdown" id="countdown">Loading...</h1>
+        </div>
+      </div>
+
+      <div class="cup">
+        <svg class="steam" viewBox="0 0 30 60" xmlns="http://www.w3.org/2000/svg">
+          <g>
+            <path d="M10 52 C 8 44, 12 36, 10 28" stroke-width="1.4" stroke-linecap="round"/>
+            <path d="M18 52 C 16 44, 20 36, 18 28" stroke-width="1.4" stroke-linecap="round"/>
+          </g>
+        </svg>
+      </div>
+
+      <div class="tiles">
+        <img src="sp_logo.png" alt="Logo" class="tile" />
+        <img src="sp_logo.png" alt="Logo" class="tile" />
+        <img src="sp_logo.png" alt="Logo" class="tile" />
+      </div>
     </div>
-    <div class="inner-box countdown-box">
-      <h1 class="countdown" id="countdown">Loading...</h1>
-    </div>
-    <p class="message">We’re preparing something amazing. Stay tuned!</p>
   </div>
 
   <script>
-    // Set your target date here
+    const canvas = document.querySelector('.bg-canvas');
+    const ctx = canvas.getContext('2d');
+
+    let W = canvas.width = innerWidth;
+    let H = canvas.height = innerHeight;
+
+    window.addEventListener('resize', ()=>{
+      W = canvas.width = innerWidth;
+      H = canvas.height = innerHeight;
+    });
+
+    // particle tiles
+    const tiles = [];
+    const NUM = Math.floor(Math.max(12, (W*H)/70000));
+
+    function rand(a,b){return a + Math.random()*(b-a)}
+
+    for(let i=0;i<NUM;i++){
+      tiles.push({
+        x: rand(0,W), y: rand(0,H),
+        s: rand(14,60),
+        vx: rand(-0.15,0.15), vy: rand(-0.02,0.02),
+        rot: rand(0,Math.PI*2), vrot: rand(-0.01,0.01),
+        hue: rand(250,315), sat: rand(60,100), light: rand(45,65), alpha: rand(0.06,0.18)
+      })
+    }
+
+    function draw(){
+      ctx.clearRect(0,0,W,H);
+
+      // subtle vignette
+      const g = ctx.createLinearGradient(0,0,W,H);
+      g.addColorStop(0,'rgba(12,0,40,0.18)');
+      g.addColorStop(1,'rgba(2,0,20,0.35)');
+      ctx.fillStyle = g;
+      ctx.fillRect(0,0,W,H);
+
+      for(const t of tiles){
+        t.x += t.vx; t.y += t.vy; t.rot += t.vrot;
+        if(t.x < -100) t.x = W + 100;
+        if(t.x > W + 100) t.x = -100;
+        if(t.y < -100) t.y = H + 100;
+        if(t.y > H + 100) t.y = -100;
+
+        ctx.save();
+        ctx.translate(t.x,t.y);
+        ctx.rotate(t.rot);
+
+        // glow
+        ctx.shadowColor = `hsla(${t.hue}, ${t.sat}%, ${t.light}%, ${t.alpha*6})`;
+        ctx.shadowBlur = Math.min(48, t.s*0.8);
+
+        // main rect
+        ctx.fillStyle = `linear-gradient(0,transparent,transparent)`; // placeholder
+        // since canvas doesn't support CSS gradients directly in fillStyle, create gradient
+        const cg = ctx.createLinearGradient(-t.s/2, -t.s/2, t.s/2, t.s/2);
+        cg.addColorStop(0, `hsla(${t.hue-20}, ${t.sat}%, ${t.light+6}%, ${t.alpha+0.04})`);
+        cg.addColorStop(0.5, `hsla(${t.hue+20}, ${t.sat}%, ${t.light-6}%, ${t.alpha+0.06})`);
+        cg.addColorStop(1, `hsla(${t.hue}, ${t.sat}%, ${t.light}%, ${t.alpha})`);
+        ctx.fillStyle = cg;
+        roundRect(ctx, -t.s/2, -t.s/2, t.s, t.s*0.6, Math.max(4,t.s*0.08));
+        ctx.fill();
+
+        // inner line to mimic neon rim
+        ctx.strokeStyle = `hsla(${t.hue+50}, ${Math.min(100,t.sat+10)}%, ${Math.min(100,t.light+10)}%, 0.8)`;
+        ctx.lineWidth = Math.max(1, t.s*0.04);
+        ctx.stroke();
+
+        ctx.restore();
+      }
+
+      requestAnimationFrame(draw);
+    }
+
+    function roundRect(ctx, x, y, w, h, r){
+      ctx.beginPath();
+      ctx.moveTo(x+r,y);
+      ctx.arcTo(x+w,y,x+w,y+h,r);
+      ctx.arcTo(x+w,y+h,x,y+h,r);
+      ctx.arcTo(x,y+h,x,y,r);
+      ctx.arcTo(x,y,x+w,y,r);
+      ctx.closePath();
+    }
+
+    draw();
+
+    // subtle parallax based on mouse
+    const scene = document.querySelector('.scene');
+    window.addEventListener('mousemove', (e)=>{
+      const cx = e.clientX / W - 0.5;
+      const cy = e.clientY / H - 0.5;
+      scene.style.transform = `translate3d(${cx*80}px,${cy*64}px,0)`;
+      document.querySelector('.laptop').style.transform = `translate(-50%,-45%) rotateX(${12+cy*4}deg) rotateY(${cx*6}deg)`;
+    });
+
+    // make lines in screen flicker randomly for more life
+    const lines = Array.from(document.querySelectorAll('.line'));
+    setInterval(()=>{
+      const i = Math.floor(Math.random()*lines.length);
+      const el = lines[i];
+      el.style.opacity = (0.4 + Math.random()*0.66).toFixed(2);
+      el.style.transform = `translateX(${(Math.random()-0.5)*8}px)`;
+      setTimeout(()=>{el.style.transform='';}, 400 + Math.random()*900);
+    }, 220);
+
+        // Set your target date here
     const targetDate = new Date("2025-10-31T23:51:49").getTime();
     const countdown = document.getElementById("countdown");
 
@@ -138,7 +282,7 @@
 
     updateCountdown();
     setInterval(updateCountdown, 1000);
+
   </script>
 </body>
 </html>
-
