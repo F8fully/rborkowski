@@ -199,13 +199,6 @@
 
     }
 
-    [contenteditable="true"]:focus {
-      outline: 2px dashed var(--accent);
-      outline-offset: 4px;
-    }
-
-
-
     section#forvia{
       page-break-before: always;
       break-inside: avoid;
