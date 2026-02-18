@@ -194,7 +194,7 @@
       .profile { flex-direction: column; align-items: flex-start; }
 
       .avatar:hover img {
-        transform: translate(380%, 425%) scale(2.5); /* center + enlarge */
+        transform: translate(30%, 25%) scale(2.5); /* center + enlarge */
       }
 
     }
@@ -251,4 +251,5 @@
     transform: scale(1);
   }
 }
+
 
