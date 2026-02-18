@@ -13,7 +13,7 @@ The project is designed to:
 
 You can view the online version here:
 
-👉 [Live CV](https://your-username.github.io/repository-name/)
+👉 [Live CV](https://f8fully.github.io/RBorkowski_CV/)
 
 ---
 
