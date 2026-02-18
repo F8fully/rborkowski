@@ -51,7 +51,7 @@ It is intended for presentation and job application purposes.
 
 ## 📬 Contact
 
-- LinkedIn: [Your LinkedIn]
+- LinkedIn: (https://www.linkedin.com/in/rborkowski-pw/)]
 - GitHub: [Your GitHub]
 - Portfolio: [Your Website]
 
